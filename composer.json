@@ -1,5 +1,5 @@
 {
-    "name": "TestInsance/laravel-model-profiles",
+    "name": "testinstance/laravel-model-profiles",
     "description": "Laravel Model Profiles",
     "type": "composer-plugin",
     "license": "MIT",
