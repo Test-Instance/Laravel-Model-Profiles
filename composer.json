@@ -29,5 +29,11 @@
                 "TestInstance\\LaravelModelProfiles\\ProfileServiceProvider"
             ]
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Test-Instance/Laravel-Model-Profiles"
+        }
+    ]
 }
