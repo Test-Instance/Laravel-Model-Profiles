@@ -110,7 +110,7 @@ trait ProfileTrait
      * @param string $key
      * @return mixed
      */
-    public function __get(string $key): mixed
+    public function __get($key): mixed
     {
         if ($key === 'value' && str_starts_with($this->profileKey->type, 'model')) {
             return $this->model;

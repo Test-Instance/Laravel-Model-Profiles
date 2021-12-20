@@ -32,7 +32,7 @@ class ProfileFileHandler extends MigrationCreator
      *
      * @return string
      */
-    public function createProfileMigration($modelPath, $name, $model, $table, $path): string
+    public function createProfileMigration($modelPath, $name, $model, $table, $className, $path): string
     {
         $this->ensureMigrationDoesntAlreadyExist($name, $path);
 
@@ -43,7 +43,7 @@ class ProfileFileHandler extends MigrationCreator
         $this->files->ensureDirectoryExists(dirname($path));
 
         $this->files->put(
-            $path, $this->populateMigrationStub($modelPath, $name, $model, $stub)
+            $path, $this->populateMigrationStub($modelPath, $name, $model, $className, $stub)
         );
 
         $this->firePostCreateHooks($table);
@@ -59,13 +59,15 @@ class ProfileFileHandler extends MigrationCreator
     private function buildMigrationParameters($modelPath): array
     {
         $model = basename($modelPath);
-        $name = strtolower($model) . '_profile';
+        $name = strtolower(Str::snake($model)) . '_profile';
+        $className = $model . 'Profile';
 
         return [
             'name' => $name,
             'path' => config('profiles.migration_path') ?? 'database/migrations',
             'model' => $model,
-            'table' => $name . 's'
+            'table' => $name,
+            'className' => $className
         ];
     }
 
@@ -77,16 +79,16 @@ class ProfileFileHandler extends MigrationCreator
      *
      * @return string
      */
-    private function populateMigrationStub($modelPath, $name, $model, $stub): string
+    private function populateMigrationStub($modelPath, $name, $model, $className, $stub): string
     {
         return str_replace([
             '{{model}}',
             '{{modelPath}}',
-            '{{table}}'
+            '{{className}}'
         ], [
             $model,
             $modelPath,
-            Str::studly($name)
+            $className
         ], $stub);
     }
 
