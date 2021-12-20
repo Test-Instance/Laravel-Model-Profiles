@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Testinsance\\LaravelModelProfiles\\": "src/"
+            "TestInstance\\LaravelModelProfiles\\": "src/"
         },
         "classmap": []
     },
