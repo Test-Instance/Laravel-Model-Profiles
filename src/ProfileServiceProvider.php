@@ -3,10 +3,10 @@
 namespace TestInstance\LaravelModelProfiles;
 
 use Illuminate\Database\Migrations\MigrationCreator;
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Illuminate\Support\ServiceProvider;
 use TestInstance\LaravelModelProfiles\Console\Commands\MakeModelProfile;
 
-class ProfileServiceProvider extends BaseServiceProvider
+class ProfileServiceProvider extends ServiceProvider
 {
 
     /**
