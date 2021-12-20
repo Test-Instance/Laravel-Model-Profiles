@@ -1,9 +1,9 @@
 <p align="center"><a href="https://testinstance.co.uk" target="_blank"><img src="https://raw.githubusercontent.com/Test-Instance/Laravel-Model-Profiles/master/.github/images/testinstancebanner.png" width="400"></a></p>
 
 <p align="center">
-<a href="https://packagist.org/packages/testinsance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/testinsance/laravel-model-profilesk"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/testinsance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/license.svg" alt="License"></a>
+<a href="https://packagist.org/packages/testinstance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/testinstance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/testinstance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/license.svg" alt="License"></a>
 </p>
 
 ## About Laravel Model Profiles
