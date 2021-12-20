@@ -1,0 +1,15 @@
+<?php
+
+namespace {{namespace}};
+
+use {{modelPath}};
+use TestInstance\LaravelModelProfiles\Test\AbstractProfileTraitTest;
+
+class {{name}} extends AbstractProfileTraitTest
+{
+
+    public function getModel(): string
+    {
+        return {{model}}::class;
+    }
+}

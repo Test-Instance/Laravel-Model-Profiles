@@ -1,0 +1,11 @@
+<?php
+
+namespace {{namespace}};
+
+use TestInstance\LaravelModelProfiles\Traits\ProfileTrait;
+use Illuminate\Database\Eloquent\Model;
+
+class {{model}} extends Model
+{
+    use ProfileTrait;
+}
