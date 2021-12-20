@@ -2,9 +2,9 @@
 
 namespace TestInstance\LaravelModelProfiles;
 
+use TestInstance\LaravelModelProfiles\Console\Commands\MakeModelProfile;
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Support\ServiceProvider;
-use TestInstance\LaravelModelProfiles\Console\Commands\MakeModelProfile;
 
 class ProfileServiceProvider extends ServiceProvider
 {
