@@ -6,7 +6,7 @@
     "autoload": {
         "psr-4": {
             "TestInstance\\LaravelModelProfiles\\": "src/"
-        },
+        }
     },
     "minimum-stability": "dev",
     "authors": [
