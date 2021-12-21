@@ -27,7 +27,7 @@ Default is `App/Models`
 
 > We will use 'User.php' Model as an example.
 
-# Make Model Profile
+### Make Model Profile
 
 In order to use Laravel Model Profiles you must use the 'use HasProfile' trait on your selected model class. 'use TestInstance\LaravelModelProfiles\Traits\HasProfile;'.
 
@@ -58,7 +58,7 @@ You will see that the `user_profile_keys` table is created with:
 > created_at
 > updated_at
 
-# Interactions
+### Interactions
 
 `$profileKey = 'color';
 $users = User::whereProfile($profileKey, 'blue')->get();`
@@ -69,12 +69,12 @@ $users = User::whereProfile($profileKey, 'blue')->get();`
 
 The profileKey type will dictate which data type it relates to and will be casted as such. The available types are listed in the Laravel documentation <a href="https://laravel.com/docs/8.x/eloquent-mutators#attribute-casting">here</a>. Model casting in profile is an extension and will be documented after its full release. 
 
-# Eagerloading
+### Eagerloading
 
 Every model with a profile will eagerload its profile and profile attributes can be accessed the same way model attributes are.
 - example: `$user->color` will return `blue` even if the attribute 'color' does not exist as a column on user.
 
-# Notes
+### Notes
 
 > Mass Assignment
 Updating a model with profile attributes loaded will not be affected by profile.
