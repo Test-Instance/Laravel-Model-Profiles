@@ -89,7 +89,7 @@ Every model with a profile will eagerload its profile. Profile attributes can be
 > Casting model profile type to another model is [WIP]
 
 - [ ] Unit Tests
-> Unit tests exist for profile, however model specific tests are not. These are [WIP]. These can be created manually in the current version
+> Unit tests exist for profile, however model specific tests do not. These are [WIP]. These can be created manually in the current version
 
 <hr/>
 
