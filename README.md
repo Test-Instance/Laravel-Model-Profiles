@@ -68,6 +68,7 @@ You will see that the `user_profile_keys` table is created with:
 
 ````
 //'color' is the name of the profileKey related to the model - 'user_profile_keys.name'
+//'blue' is the value of the profile related to the model - 'user_profiles.value'
 $users = User::whereProfile('color', 'blue')->get();
 ```` 
 
