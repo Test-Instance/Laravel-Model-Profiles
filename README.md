@@ -6,7 +6,7 @@
 <a href="https://packagist.org/packages/testinstance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/license.svg" alt="License"></a>
 </p>
 
-## About Laravel Model Profiles
+## Laravel Model Profiles
 
 <p>
 Laravel Model Profiles allows the extension of conventional normalization forms where scaling is seen to be completed via rows representing value with data types and relational keys rather than additional tables and key based relations.
