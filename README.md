@@ -38,7 +38,7 @@ In order to use Laravel Model Profiles you must use the 'use HasProfile' trait o
 Run `php artisan make:profile ModelScope\ModelClassName`
 - example: `php artisan make:profile User\User`. This will create a profile for the User.php Model.
 
-You will see that two new models and a migration file is created:
+You will see that two new models and a migration file are created:
 - `App/Models/User/UserProfile.php`
 - `App/Models/User/UserProfileKey.php`
 - `database/migrations/{timestamp}_user_profile.php`
