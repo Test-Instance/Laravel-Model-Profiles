@@ -1,6 +1,6 @@
 {
     "name": "testinstance/laravel-model-profiles",
-    "description": "Laravel Model Profiles",
+    "description": "Laravel Model Profiles - Vertical Based Model Data Expansion On Key Value",
     "license": "MIT",
     "autoload": {
         "psr-4": {
