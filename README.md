@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://packagist.org/packages/testinstance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/testinstance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/testinstance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/version.svg" alt="Latest Version"></a>
 <a href="https://packagist.org/packages/testinstance/laravel-model-profiles"><img src="https://poser.pugx.org/testinstance/laravel-model-profiles/license.svg" alt="License"></a>
 </p>
 
