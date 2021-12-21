@@ -64,6 +64,8 @@ You will see that the `user_profile_keys` table is created with:
 
 ### Interactions
 
+#### Retrieve by profile value
+
 ````
 $profileKey = 'color';
 $users = User::whereProfile($profileKey, 'blue')->get();
@@ -74,6 +76,14 @@ $users = User::whereProfile($profileKey, 'blue')->get();
 `whereProfile` & `whereProfileIn` are a direct pass-through to the native Laravel `where` & `whereIn` so can be used as such. (Including searching for multiple parameters as an array: `whereProfile(['color' => 'blue', 'anotherProfileKey' => 'anotherProfileValue'])`).
 
 The profileKey type will dictate which data type it relates to and will be casted as such. The available types are listed in the Laravel documentation <a href="https://laravel.com/docs/8.x/eloquent-mutators#attribute-casting">here</a>. Model casting in profile is an extension and will be documented after its full release. 
+
+#### Save profile value
+
+To save a profile value you can simple use the following format:
+`````
+$user->color = 'blue';
+$user->save();
+`````
 
 ### Eagerloading
 
