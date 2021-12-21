@@ -23,7 +23,7 @@ Your models must live within `App/Models`
 
 - (version 2 onward) [WIP]
 Set your model path and migration path within the `app/config/profiles.php` file. These tell Laravel Model Profiles where to inject new profile models & migrations via creation.
-Default is `App/Models`
+Default is `App/Models` & `database/migrations`
 
 <hr/>
 
