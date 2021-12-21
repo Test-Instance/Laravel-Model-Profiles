@@ -88,11 +88,14 @@ Updating a model with profile attributes loaded will not be affected by profile.
 - [ ] Casting
 Model profile type to another model is [WIP]
 
+- [ ] Tests
+Unit tests exist for profile, however model specific tests are not. These are [WIP]. These can be created manually in the current version
+
 <hr/>
 
 ## Dependencies
 
-- Laravel Framework: "^8.75"
+- Laravel Framework: "^8.75" (Recommended)
 - PHP:               "^8.0"
 
 <hr/>
