@@ -14,6 +14,8 @@ Laravel Model Profiles allows the extension of conventional normalization forms 
 Note - ONLY COMPATIBLE WITH <a href="https://packagist.org/packages/laravel/framework">LARAVEL FRAMEWORK</a>
 </p>
 
+<hr/>
+
 ## Setup
 
 > (version 1) 
@@ -22,6 +24,8 @@ Your models must live within `App/Models`
 > (version 2 onward) 
 Set your model path and migration path within the `app/config/profiles.php` file. These tell Laravel Model Profiles where to inject new profile Models & Migrations via creation.
 Default is `App/Models`
+
+<hr/>
 
 ## Usage
 
@@ -32,40 +36,42 @@ Default is `App/Models`
 In order to use Laravel Model Profiles you must use the 'use HasProfile' trait on your selected model class. 'use TestInstance\LaravelModelProfiles\Traits\HasProfile;'.
 
 Run `php artisan make:profile ModelScope\ModelClassName`
-- example: `php artisan make:profile User\User`, this will create a profile for the User.php Model.
+- example: `php artisan make:profile User\User`. This will create a profile for the User.php Model.
 
 You will see that two new models and a migration file is created:
-`App/Models/User/UserProfile.php`
-`App/Models/User/UserProfileKey.php`
-`database/migrations/{timestamp}_user_profile.php`
+- `App/Models/User/UserProfile.php`
+- `App/Models/User/UserProfileKey.php`
+- `database/migrations/{timestamp}_user_profile.php`
 
 Run `php artisan migrate`
 
 You will see that the `user_profiles` table is created with:
-> id
-> user_id
-> user_profile_key_id
-> value
-> created_at
-> updated_at
-> deleted_at
-> deleted_at_unique
+- id
+- user_id
+- user_profile_key_id
+- value
+- created_at
+- updated_at
+- deleted_at
+- deleted_at_unique
 
 You will see that the `user_profile_keys` table is created with:
-> id
-> name
-> type
-> created_at
-> updated_at
+- id
+- name
+- type
+- created_at
+- updated_at
 
 ### Interactions
 
-`$profileKey = 'color';
-$users = User::whereProfile($profileKey, 'blue')->get();`
+````
+$profileKey = 'color';
+$users = User::whereProfile($profileKey, 'blue')->get();
+```` 
 
 `$users` will be a collection of `users` which have the profile value of `blue` for the `profile_key` name of `color`
 
-`WhereProfile` & `WhereProfileIn` are a direct pass-through to the native Laravel `where` & `whereIn` so can be used as such. (Including searching for multiple parameters as an array: `whereProfile(['color' => 'blue', 'anotherProfileKey' => 'anotherProfileValue'])`).
+`whereProfile` & `whereProfileIn` are a direct pass-through to the native Laravel `where` & `whereIn` so can be used as such. (Including searching for multiple parameters as an array: `whereProfile(['color' => 'blue', 'anotherProfileKey' => 'anotherProfileValue'])`).
 
 The profileKey type will dictate which data type it relates to and will be casted as such. The available types are listed in the Laravel documentation <a href="https://laravel.com/docs/8.x/eloquent-mutators#attribute-casting">here</a>. Model casting in profile is an extension and will be documented after its full release. 
 
@@ -76,21 +82,32 @@ Every model with a profile will eagerload its profile and profile attributes can
 
 ### Notes
 
-> Mass Assignment
+- [x] Mass Assignment
 Updating a model with profile attributes loaded will not be affected by profile.
 
-> Casting
+- [ ] Casting
 Model profile type casting to another model is [WIP]
+
+<hr/>
 
 ## Dependencies
 
-Laravel Framework: "^8.75"
-PHP:               "^8.0"
+- Laravel Framework: "^8.75"
+- PHP:               "^8.0"
+
+<hr/>
 
 ## Security
 
 Please notify us of any security issues or concerns via [developers@testinstance.co.uk](mailto:developers@testinstance.co.uk)
 
+<hr/>
+
 ## License
 
 Laravel Model Profiles is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Authors
+
+<a href="https://github.com/Ballard-dev">Ballard-dev</a>
+<a href="https://github.com/KieranFYi">KieranFYI</a>
