@@ -33,7 +33,9 @@ Default is `App/Models` & `database/migrations`
 
 `composer require testinstance/laravel-model-profiles`
 
-> We will use 'User.php' model as an example.
+<hr>
+
+> We will use 'User.php' model as an example for this usage guide.
 
 ### Make Model Profile
 
