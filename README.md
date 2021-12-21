@@ -83,13 +83,13 @@ Every model with a profile will eagerload its profile. Profile attributes can be
 ### Notes
 
 - [x] Mass Assignment
-Updating a model with profile attributes loaded will not be affected by profile.
+> Updating a model with profile attributes loaded will not be affected by profile.
 
-- [ ] Casting
-Model profile type to another model is [WIP]
+- [ ] Model Casting
+> Casting model profile type to another model is [WIP]
 
-- [ ] Tests
-Unit tests exist for profile, however model specific tests are not. These are [WIP]. These can be created manually in the current version
+- [ ] Unit Tests
+> Unit tests exist for profile, however model specific tests are not. These are [WIP]. These can be created manually in the current version
 
 <hr/>
 
