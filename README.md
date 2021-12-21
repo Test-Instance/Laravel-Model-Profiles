@@ -22,14 +22,14 @@ Note - ONLY COMPATIBLE WITH <a href="https://packagist.org/packages/laravel/fram
 Your models must live within `App/Models`
 
 > (version 2 onward) 
-Set your model path and migration path within the `app/config/profiles.php` file. These tell Laravel Model Profiles where to inject new profile Models & Migrations via creation.
+Set your model path and migration path within the `app/config/profiles.php` file. These tell Laravel Model Profiles where to inject new profile models & migrations via creation.
 Default is `App/Models`
 
 <hr/>
 
 ## Usage
 
-> We will use 'User.php' Model as an example.
+> We will use 'User.php' model as an example.
 
 ### Make Model Profile
 
