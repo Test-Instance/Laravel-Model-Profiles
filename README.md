@@ -14,6 +14,74 @@ Laravel Model Profiles allows the extension of conventional normalization forms 
 Note - ONLY COMPATIBLE WITH <a href="https://packagist.org/packages/laravel/framework">LARAVEL FRAMEWORK</a>
 </p>
 
+## Setup
+
+> (version 1) 
+Your models must live within `App/Models`
+
+> (version 2 onward) 
+Set your model path and migration path within the `app/config/profiles.php` file. These tell Laravel Model Profiles where to inject new profile Models & Migrations via creation.
+Default is `App/Models`
+
+## Usage
+
+> We will use 'User.php' Model as an example.
+
+# Make Model Profile
+
+In order to use Laravel Model Profiles you must use the 'use HasProfile' trait on your selected model class. 'use TestInstance\LaravelModelProfiles\Traits\HasProfile;'.
+
+Run `php artisan make:profile ModelScope\ModelClassName`
+- example: `php artisan make:profile User\User`, this will create a profile for the User.php Model.
+
+You will see that two new models and a migration file is created:
+`App/Models/User/UserProfile.php`
+`App/Models/User/UserProfileKey.php`
+`database/migrations/{timestamp}_user_profile.php`
+
+Run `php artisan migrate`
+
+You will see that the `user_profiles` table is created with:
+> id
+> user_id
+> user_profile_key_id
+> value
+> created_at
+> updated_at
+> deleted_at
+> deleted_at_unique
+
+You will see that the `user_profile_keys` table is created with:
+> id
+> name
+> type
+> created_at
+> updated_at
+
+# Interactions
+
+`$profileKey = 'color';
+$users = User::whereProfile($profileKey, 'blue')->get();`
+
+`$users` will be a collection of `users` which have the profile value of `blue` for the `profile_key` name of `color`
+
+`WhereProfile` & `WhereProfileIn` are a direct pass-through to the native Laravel `where` & `whereIn` so can be used as such. (Including searching for multiple parameters as an array: `whereProfile(['color' => 'blue', 'anotherProfileKey' => 'anotherProfileValue'])`).
+
+The profileKey type will dictate which data type it relates to and will be casted as such. The available types are listed in the Laravel documentation <a href="https://laravel.com/docs/8.x/eloquent-mutators#attribute-casting">here</a>. Model casting in profile is an extension and will be documented after its full release. 
+
+# Eagerloading
+
+Every model with a profile will eagerload its profile and profile attributes can be accessed the same way model attributes are.
+- example: `$user->color` will return `blue` even if the attribute 'color' does not exist as a column on user.
+
+# Notes
+
+> Mass Assignment
+Updating a model with profile attributes loaded will not be affected by profile.
+
+> Casting
+Model profile type casting to another model is [WIP]
+
 ## Dependencies
 
 Laravel Framework: "^8.75"
