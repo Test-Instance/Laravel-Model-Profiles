@@ -86,7 +86,7 @@ Every model with a profile will eagerload its profile and profile attributes can
 Updating a model with profile attributes loaded will not be affected by profile.
 
 - [ ] Casting
-Model profile type casting to another model is [WIP]
+Model profile type to another model is [WIP]
 
 <hr/>
 
