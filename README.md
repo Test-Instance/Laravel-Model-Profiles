@@ -77,7 +77,7 @@ The profileKey type will dictate which data type it relates to and will be caste
 
 ### Eagerloading
 
-Every model with a profile will eagerload its profile and profile attributes can be accessed the same way model attributes are.
+Every model with a profile will eagerload its profile. Profile attributes can be accessed the same way model attributes are.
 - example: `$user->color` will return `blue` even if the attribute 'color' does not exist as a column on user.
 
 ### Notes
