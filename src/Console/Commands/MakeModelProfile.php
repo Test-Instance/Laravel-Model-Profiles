@@ -5,7 +5,7 @@ namespace TestInstance\LaravelModelProfiles\Console\Commands;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Database\Eloquent\Model;
 use ReflectionException;
-use TestInstance\LaravelModelProfiles\Database\Migrations\ProfileFileHandler;
+use TestInstance\LaravelModelProfiles\Profile\ProfileFileHandler;
 use ReflectionClass;
 use TestInstance\LaravelModelProfiles\Exceptions\InvalidModelException;
 use TestInstance\LaravelModelProfiles\Exceptions\MalformedModelException;
@@ -52,7 +52,7 @@ class MakeModelProfile extends MigrateMakeCommand
      */
     public function handle(): int
     {
-        $modelPath = config('profiles.model_path') . $this->argument('model');
+        $modelPath = config('profiles.model_path') . '\\' . $this->argument('model');
 
         if(!class_exists($modelPath)) {
             throw new ModelNotFoundException("Cannot find $modelPath");

@@ -10,6 +10,16 @@ class ProfileServiceProvider extends ServiceProvider
 {
 
     /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+        $this->mergeConfig();
+    }
+
+    /**
      * Boot the service provider.
      *
      * @return void
@@ -23,14 +33,9 @@ class ProfileServiceProvider extends ServiceProvider
         $this->registerProfileCreator();
     }
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register(): void
+    private function mergeConfig(): void
     {
-        //
+        $this->mergeConfigFrom($this->getConfigPath(), 'profiles');
     }
 
     /**
@@ -38,15 +43,11 @@ class ProfileServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerConfig(): void
+    private function registerConfig(): void
     {
         $this->publishes([
-            __DIR__.'/../config/profiles.php' => config_path('profiles.php'),
-        ], 'config');
-
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/profiles.php', 'profiles'
-        );
+            $this->getConfigPath() => config_path('profiles'),
+        ]);
     }
 
     /**
@@ -54,7 +55,7 @@ class ProfileServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerCommands(): void
+    private function registerCommands(): void
     {
         $this->commands([
             'make.profile'
@@ -66,7 +67,7 @@ class ProfileServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerProfileCreator(): void
+    private function registerProfileCreator(): void
     {
         $this->app->singleton('profile.creator', function ($app) {
             return new MigrationCreator($app['files'], __DIR__ . '/../stubs');
@@ -78,5 +79,10 @@ class ProfileServiceProvider extends ServiceProvider
 
             return new MakeModelProfile($creator, $composer);
         });
+    }
+
+    private function getConfigPath()
+    {
+        return __DIR__ . '/../config/profiles.php';
     }
 }

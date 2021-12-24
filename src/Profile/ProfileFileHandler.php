@@ -1,6 +1,6 @@
 <?php
 
-namespace TestInstance\LaravelModelProfiles\Database\Migrations;
+namespace TestInstance\LaravelModelProfiles\Profile;
 
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Support\Str;
@@ -19,8 +19,10 @@ class ProfileFileHandler extends MigrationCreator
         $reflection = new ReflectionClass($modelPath);
         $path = $reflection->getNamespaceName();
 
-        $this->createProfileModel($modelPath, $path, $path);
-        $this->createProfileKeyModel($modelPath, $path, $path);
+        $this->createProfileModel($modelPath, $path);
+        $this->createProfileKeyModel($modelPath, $path);
+
+        $this->createProfileTest(...$this->buildTestParameters($modelPath));
     }
 
     /**
@@ -28,6 +30,7 @@ class ProfileFileHandler extends MigrationCreator
      * @param $name
      * @param $model
      * @param $table
+     * @param $className
      * @param $path
      *
      * @return string
@@ -43,7 +46,7 @@ class ProfileFileHandler extends MigrationCreator
         $this->files->ensureDirectoryExists(dirname($path));
 
         $this->files->put(
-            $path, $this->populateMigrationStub($modelPath, $name, $model, $className, $stub)
+            $path, $this->populateMigrationStub($modelPath, $model, $className, $stub)
         );
 
         $this->firePostCreateHooks($table);
@@ -73,13 +76,13 @@ class ProfileFileHandler extends MigrationCreator
 
     /**
      * @param $modelPath
-     * @param $name
      * @param $model
+     * @param $className
      * @param $stub
      *
      * @return string
      */
-    private function populateMigrationStub($modelPath, $name, $model, $className, $stub): string
+    private function populateMigrationStub($modelPath, $model, $className, $stub): string
     {
         return str_replace([
             '{{model}}',
@@ -98,11 +101,11 @@ class ProfileFileHandler extends MigrationCreator
      *
      * @return void
      */
-    private function createProfileKeyModel($modelPath, $namespace, $path): void
+    private function createProfileKeyModel($modelPath, $path): void
     {
         $name = basename($modelPath) . 'ProfileKey';
 
-        $this->createModel($path, $name, $namespace, 'profile_key');
+        $this->createModel($path, $name, 'profile_key');
     }
 
     /**
@@ -111,11 +114,11 @@ class ProfileFileHandler extends MigrationCreator
      *
      * @return void
      */
-    private function createProfileModel($modelPath, $namespace, $path): void
+    private function createProfileModel($modelPath, $path): void
     {
         $name = basename($modelPath) . 'Profile';
 
-        $this->createModel($path, $name, $namespace,'profile');
+        $this->createModel($path, $name,'profile');
     }
 
     /**
@@ -125,9 +128,11 @@ class ProfileFileHandler extends MigrationCreator
      *
      * @return void
      */
-    private function createModel($path, $name, $namespace, $stub): void
+    private function createModel($path, $name, $stub): void
     {
         $stub = file_get_contents($this->customStubPath . "/$stub.create.stub");
+
+        $namespace = $path;
 
         $path = $this->getModelPath($name, $path);
 
@@ -159,11 +164,75 @@ class ProfileFileHandler extends MigrationCreator
     private function populateModelStub($name, $path, $stub): string
     {
         return str_replace([
-            '{{model}}',
+            '{{name}}',
             '{{namespace}}',
         ], [
             $name,
             $path,
+        ], $stub);
+    }
+
+    /**
+     * @param $modelPath
+     * @param $path
+     * @param $model
+     * @param $name
+     * @param $stub
+     *
+     * @return void
+     */
+    protected function createProfileTest($modelPath, $path, $namespace, $model, $name): void
+    {
+        $stub = file_get_contents($this->customStubPath . "/test.create.stub");
+
+        $path = $this->getModelPath($name, $path);
+
+        $this->files->ensureDirectoryExists(dirname($path));
+
+        $this->files->put(
+            $path, $this->populateTestStub($modelPath, $namespace, $model, $name, $stub)
+        );
+    }
+
+    /**
+     * @param $modelPath
+     *
+     * @return array
+     */
+    protected function buildTestParameters($modelPath): array
+    {
+        $model = basename($modelPath);
+
+        return [
+            'modelPath' => $modelPath,
+            'path' => (config('profiles.test_path') ?? 'tests/Unit/Models') . '/' . $model,
+            'namespace' => 'Models\\' . $model,
+            'model' => $model,
+            'name' => $model . 'ProfileTest',
+        ];
+    }
+
+    /**
+     * @param $name
+     * @param $namespace
+     * @param $stub
+     * @param $modelPath
+     * @param $model
+     *
+     * @return string
+     */
+    private function populateTestStub($modelPath, $namespace, $model, $name, $stub): string
+    {
+        return str_replace([
+            '{{name}}',
+            '{{namespace}}',
+            '{{modelPath}}',
+            '{{model}}'
+        ], [
+            $name,
+            $namespace,
+            $modelPath,
+            $model
         ], $stub);
     }
 }
