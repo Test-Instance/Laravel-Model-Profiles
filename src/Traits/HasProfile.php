@@ -3,18 +3,19 @@
 namespace TestInstance\LaravelModelProfiles\Traits;
 
 use TestInstance\LaravelModelProfiles\Exceptions\InvalidProfileKeyException;
-use Carbon\Carbon;
-use Closure;
-use Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Collection;
+use Carbon\Carbon;
+use Exception;
+use Closure;
 
 /**
+ * @property Collection $profile
+ *
  * @mixin Model
  */
 trait HasProfile
@@ -25,9 +26,6 @@ trait HasProfile
      */
     private static array $profileKeys = [];
 
-    /**
-     * Injects profile into model's with property to eager load it
-     */
     public function initializeHasProfile(): void
     {
         array_push($this->with, 'profile');
@@ -35,15 +33,9 @@ trait HasProfile
 
     /**
      * @throws Exception
-     *
-     * @return void
      */
     public static function loadProfileKeys(): void
     {
-        if (!App::runningUnitTests()) {
-            throw new Exception('loadProfileKeys is for testing only.');
-        }
-
         static::$profileKeys[static::class] = (static::getProfileKeyClass())::get();
     }
 
@@ -118,12 +110,20 @@ trait HasProfile
                 $profileKeyModel->getForeignKey()
             ], $profileModel->getTable() . '_deleted_unique');
 
-            $table->foreign($model->getForeignKey(), $model->getForeignKey() . '_foreign')
-                ->references($model->getKeyName())
-                ->on($model->getTable());
-            $table->foreign($profileKeyModel->getForeignKey(), $profileKeyModel->getForeignKey() . '_foreign')
-                ->references($profileKeyModel->getKeyName())
-                ->on($profileKeyModel->getTable());
+            $modelForeignKey = self::convertNameToForeignKey($model->getTable()) . '_'
+                . self::convertNameToForeignKey($model->getForeignKey());
+            $table->foreign($model->getForeignKey(), $modelForeignKey . '_foreign')
+                ->references('id')
+                ->on($model->getTable())
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $profileKeyForeignKey = self::convertNameToForeignKey($profileKeyModel->getTable()) . '_'
+                . self::convertNameToForeignKey($profileKeyModel->getForeignKey());
+            $table->foreign($profileKeyModel->getForeignKey(), $profileKeyForeignKey . '_foreign')
+                ->references('id')
+                ->on($profileKeyModel->getTable())
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
     }
     // @codeCoverageIgnoreEnd
@@ -142,6 +142,22 @@ trait HasProfile
         Schema::dropIfExists((new $profileKeyClass())->getTable());
     }
     // @codeCoverageIgnoreEnd
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    private static function convertNameToForeignKey(string $name): string
+    {
+        $foreignKey = '';
+        $words = explode('_', $name);
+        foreach ($words as $w) {
+            $foreignKey .= substr($w, 0, 1);
+        }
+
+        return $foreignKey;
+    }
+
 
     /**
      * @return HasMany
@@ -174,6 +190,7 @@ trait HasProfile
     /**
      * @param string $profileKeyName
      * @param mixed $value
+     *
      * @return void
      * @throws InvalidProfileKeyException
      */
@@ -184,12 +201,11 @@ trait HasProfile
             return;
         }
 
-        if (is_a($value, Model::class)) {
+        if (is_object($value) && method_exists($value, 'getKeyName')) {
             $value = $value->{$value->getKeyName()};
         }
 
         $profile = $this->profile->firstWhere('profileKey.name', $profileKeyName);
-        $oldProfileKey = null;
 
         if (is_null($profile)) {
             $profileKey = static::profileKeys()->firstWhere('name', $profileKeyName);
@@ -201,34 +217,34 @@ trait HasProfile
             $profileKeyClass = static::getProfileKeyClass();
             $profileKeyModel = new $profileKeyClass();
 
-            $profile = new $profileClass();
-            $profile->{$this->getForeignKey()} = $this->id;
-            $profile->{$profileKeyModel->getForeignKey()} = $profileKey->id;
+            $profileClass::unguard();
+            $profile = new $profileClass([
+                $this->getForeignKey() => $this->{$this->getKeyName()},
+                $profileKeyModel->getForeignKey() => $profileKey->id,
+                'value' => $value
+            ]);
+            $profileClass::reguard();
         } else {
-            if ($profile->getRawAttribute('value') == $value) {
+            $profile = $profile->replicate(['deleted_at_unique']);
+            $profile->value = $value;
+            if (!$profile->wasChanged('value')) {
                 return;
             }
 
-            $oldProfileKey = $this->profile->search(function ($item) use ($profileKeyName) {
-                return $item->profileKey->name == $profileKeyName;
-            });
-
-            $newProfile = $profile->replicate(['deleted_at_unique']);
-            $profile->delete();
-            $profile = $newProfile;
+            $profileKey = $this->profile->search(fn($item) => $item->profileKey->name == $profileKeyName);
+            if (!is_null($profileKey)) {
+                $this->profile->get($profileKey)->delete();
+                $this->profile->forget($profileKey);
+            }
         }
 
-        $profile->value = $value;
         $profile->save();
 
-        $fillable = $this->fillable;
-        $this->fillable[] = 'updated_at';
-        $this->update(['updated_at' => Carbon::now()]);
-        $this->fillable = $fillable;
-
-        if (!is_null($oldProfileKey)) {
-            $this->profile->get($oldProfileKey)->delete();
-            $this->profile->forget($oldProfileKey);
+        if ($this->timestamps) {
+            $fillable = $this->fillable;
+            $this->fillable[] = 'updated_at';
+            $this->update(['updated_at' => Carbon::now()]);
+            $this->fillable = $fillable;
         }
 
         $this->profile->push($profile);
@@ -236,7 +252,6 @@ trait HasProfile
 
     /**
      * @param string $profileKeyName
-     * @return void
      * @throws InvalidProfileKeyException
      */
     public function deleteProfileValue(string $profileKeyName): void
@@ -246,9 +261,7 @@ trait HasProfile
             throw new InvalidProfileKeyException($profileKeyName . ' on ' . static::class);
         }
 
-        $key = $this->profile->search(function ($profile) use ($profileKey) {
-            return $profile->profileKey->is($profileKey);
-        });
+        $key = $this->profile->search(fn($profile) => $profile->profileKey->is($profileKey));
 
         if ($key === false) {
             return;
@@ -256,6 +269,22 @@ trait HasProfile
 
         $this->profile->get($key)->delete();
         $this->profile->forget($key);
+    }
+
+    /**
+     * Dynamically retrieve attributes on the model.
+     *
+     * @param string $key
+     * @return mixed
+     * @throws InvalidProfileKeyException
+     */
+    public function __get($key)
+    {
+        if (static::profileKeys()->contains('name', $key)) {
+            return $this->getProfileValue($key);
+        }
+
+        return $this->getAttribute($key);
     }
 
     /**
@@ -274,22 +303,6 @@ trait HasProfile
         }
 
         $this->setAttribute($key, $value);
-    }
-
-    /**
-     * Dynamically retrieve attributes on the model.
-     *
-     * @param string $key
-     * @return mixed
-     * @throws InvalidProfileKeyException
-     */
-    public function __get($key): mixed
-    {
-        if (static::profileKeys()->contains('name', $key)) {
-            return $this->getProfileValue($key);
-        }
-
-        return $this->getAttribute($key);
     }
 
 
@@ -316,7 +329,7 @@ trait HasProfile
      * @return void
      * @throws InvalidProfileKeyException
      */
-    public function __unset($key): void
+    public function __unset($key)
     {
         if (static::profileKeys()->contains('name', $key)) {
             $this->deleteProfileValue($key);
@@ -336,11 +349,11 @@ trait HasProfile
      * @throws InvalidProfileKeyException
      */
     public function scopeWhereProfile(
-        Builder $query,
+        Builder              $query,
         Closure|string|array $column,
-        mixed $operator = null,
-        mixed $value = null,
-        string $boolean = 'and'
+        mixed                $operator = null,
+        mixed                $value = null,
+        string               $boolean = 'and'
     ): Builder
     {
         $profileKey = static::profileKeys()->firstWhere('name', $column);
