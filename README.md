@@ -14,6 +14,9 @@ Laravel Model Profiles allows the extension of conventional normalization forms 
 Note - ONLY COMPATIBLE WITH <a href="https://packagist.org/packages/laravel/framework">LARAVEL FRAMEWORK</a>
 </p>
 
+#### Why?
+Profile tables allow the expansion or reduction of data points against a model without the need to add new columns to the original model table. For example, a 400 column table of data could be compressed down to a 1 column (primaryKey id) table.
+
 <hr/>
 
 ## Setup
