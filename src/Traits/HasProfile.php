@@ -225,11 +225,12 @@ trait HasProfile
             ]);
             $profileClass::reguard();
         } else {
-            $profile = $profile->replicate(['deleted_at_unique']);
-            $profile->value = $value;
-            if (!$profile->wasChanged('value')) {
+            $newProfile = $profile->replicate(['deleted_at_unique']);
+            $newProfile->value = $value;
+            if ($profile->value == $newProfile->value) {
                 return;
             }
+            $profile = $newProfile;
 
             $profileKey = $this->profile->search(fn($item) => $item->profileKey->name == $profileKeyName);
             if (!is_null($profileKey)) {
